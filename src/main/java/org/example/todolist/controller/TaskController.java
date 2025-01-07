@@ -18,12 +18,6 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping
-    public String listTasks(Model model) {
-        model.addAttribute("tasks", taskService.getAllTasks());
-        return "tasks/list";
-    }
-
     @GetMapping("/new")
     public String createTaskForm(Model model) {
         model.addAttribute("task", new Task());
@@ -57,6 +51,21 @@ public class TaskController {
     @GetMapping("/delete/{id}")
     public String deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+        return "redirect:/tasks";
+    }
+    @GetMapping
+    public String listTasks(Model model) {
+        model.addAttribute("incompleteTasks", taskService.getIncompleteTasks());
+        model.addAttribute("completedTasks", taskService.getCompletedTasks());
+        return "tasks/list";
+    }
+    @PostMapping("/toggle/{id}")
+    public String toggleTaskStatus(@PathVariable Long id) {
+        Task task = taskService.getTaskById(id);
+        if (task != null) {
+            task.setCompleted(!task.isCompleted());
+            taskService.saveTask(task);
+        }
         return "redirect:/tasks";
     }
 }
