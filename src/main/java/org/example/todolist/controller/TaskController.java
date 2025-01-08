@@ -38,13 +38,8 @@ public class TaskController {
 
     @PostMapping("/{id}")
     public String updateTask(@PathVariable Long id, @ModelAttribute("task") Task task) {
-        Task existingTask = taskService.getTaskById(id);
-        if (existingTask != null) {
-            existingTask.setTitle(task.getTitle());
-            existingTask.setDescription(task.getDescription());
-            existingTask.setCompleted(task.isCompleted());
-            taskService.saveTask(existingTask);
-        }
+        task.setId(id); // Ensure the ID is set
+        taskService.saveTask(task);
         return "redirect:/tasks";
     }
 
